@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <meta charset="UTF-8">
+        <title>Music Maker</title>
+
+        <!-- Load styles and bootstrap -->
+        <link rel="stylesheet" href="style.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+        <!-- Load PyScript Core -->
+        <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
+        <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
+
+    </head>
+    <body>
+        <div class="main-container">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Music Maker</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" id="navbar-import">Import</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Export
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" id="navbar-export-wav">Save as wav</a></li>
+                                    <li><a class="dropdown-item" id="navbar-export-json">Save as json</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Add instrument
+                                </a>
+                                <ul class="dropdown-menu" id="navbar-instrument-list">
+                                    <!-- The python will add the list of instruments here; source = instrument-list.html -->
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Settings
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" id="navbar-settings-beats">Number of beats</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="d-flex">
+                            <form class="d-flex" style="gap: 0.5rem; align-items: center;">
+                                <p class="navbar-text mb-0">Tempo:</p>
+                                <input type="number" class="form-control form-control-sm" id="navbar-tempo" placeholder="Tempo (BPM)" min="20" max="300" value="120" style="width: 100px;">
+                                <button class="btn btn-outline-primary btn-sm" style="margin-right: 1rem;" id="navbar-set-tempo" type="submit">Set</button>
+                            </form>
+                            <button class="btn btn-primary" id="navbar-play">&nbsp;&nbsp;&nbsp;Play&nbsp;&nbsp;&nbsp;</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script type="py" src="main.py" config="config.toml"></script>
+    </body>
+</html>

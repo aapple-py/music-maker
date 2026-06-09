@@ -1,0 +1,7 @@
+{% for instrument in instruments %}
+    <li><a class="dropdown-item" id="navbar-instrument-{{ instrument|replace(' ', '-') }}" >{{ instrument }}</a></li>
+{% endfor %}
+
+<!-- Add the other button-->
+<li><hr class="dropdown-divider"></li>
+<li><a class="dropdown-item" id="navbar-import-wav">Import from wav</a></li>
