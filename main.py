@@ -71,15 +71,29 @@ class Navbar:
     @staticmethod
     @when("click", "#navbar-instrument-list")
     def instrument_cb(event):
-        instrument_id = event.target.id.replace("navbar-instrument-", "")
-        if instrument_id not in notes:
-            notes[instrument_id] = {note["name"]: [False] * (num_beats * 4) for note in instrument_dict[instrument_id]["notes"]}
-            render()
+        if 'navbar-instrument-' in event.target.id:
+            instrument_id = event.target.id.replace("navbar-instrument-", "")
+            if instrument_id not in notes:
+                notes[instrument_id] = {note["name"]: [False] * (num_beats * 4) for note in instrument_dict[instrument_id]["notes"]}
+                render()
+        else: # import from wav
+            print("import wav")
 
     @staticmethod
-    @when("click", "#navbar-settings-beats")
+    @when("click", "#navbar-set-beats")
     def settings_beats_cb(event):
-        print("settings beats")
+        try:
+            global num_beats
+            new_num_beats = int(document.getElementById("navbar-beats").value)
+            assert 1 <= new_num_beats
+            num_beats = new_num_beats
+        except ValueError:
+            js.alert("Please enter a valid number for the number of beats.")
+        except AssertionError:
+            js.alert("Please enter a number of beats between 1 and 16.")
+        print(f"settings beats: {num_beats}")
+        render()
+
 
     @staticmethod
     @when("click", "#navbar-set-tempo")

@@ -1,6 +1,6 @@
 {% for instrument in instruments %}
     <div class="row instrument-row">
-        <div class="instrument-card col-1">
+        <div class="instrument-card">
             <div class="instrument-data">
                 <h2>{{ instrument['name']|replace('-', ' ') }}</h2>
                 <p>Volume:</p>
@@ -15,12 +15,12 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-11">
+        <div class="col">
             <div class="grid">
                 {% for note in instrument['notes'] %}
                     <div class="row">
                         {% for beat in range(num_beats * 4) %}
-                            <div class="col beat" id="{{ instrument['name'] }}-beat-{{ beat }}-note-{{ note['name'] }}"></div>
+                            <div class="col beat {% if beat % 4 == 0 %}first{% endif %}" id="{{ instrument['name'] }}-beat-{{ beat }}-note-{{ note['name'] }}"></div>
                         {% endfor %}
                     </div>
                 {% endfor %}

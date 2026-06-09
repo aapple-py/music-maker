@@ -44,13 +44,12 @@
                                     <!-- The python will add the list of instruments here; source = instrument-list.html -->
                                 </ul>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Settings
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" id="navbar-settings-beats">Number of beats</a></li>
-                                </ul>
+                            <li class="nav-item">
+                                <form class="d-flex" style="gap: 0.5rem; align-items: center; margin-left: 1rem;">
+                                    <p class="navbar-text mb-0">Beats:</p>
+                                    <input type="number" class="form-control form-control-sm" id="navbar-beats" placeholder="Number of beats" min="1" value="4" style="width: 100px;">
+                                    <button class="btn btn-outline-primary btn-sm" id="navbar-set-beats" type="submit">Set</button>
+                                </form>
                             </li>
                         </ul>
                         <div class="d-flex">
@@ -66,7 +65,7 @@
             </nav>
 
             <!-- Main area-->
-            <div class="containter text-center" id="main-area">
+            <div class="containter text-center" id="main-area" style="overflow-x: auto;">
                 <!-- The python will add the instruments here -->
             </div>
         </div>
