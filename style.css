@@ -1,0 +1,82 @@
+:root {
+    --border-color: rgb(100, 100, 100);
+}
+/* Instrument cards */
+
+.instrument-row {
+  border-bottom: 5px solid var(--border-color);  
+  flex-wrap: nowrap !important;
+}
+
+.instrument-card {
+    margin: -2px;
+    margin-left: 13px;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    border: 3px solid var(--border-color);
+}
+
+.instrument-data {
+    margin: 1rem;
+    margin-right: 0;
+    margin-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 75%;
+}
+
+.instrument-data p {
+    margin: 0;
+}
+
+.instrument-form {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
+}
+
+
+.instrument-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 25%;
+}
+
+.note {
+    margin: 0;
+    padding: 0.25rem;
+}
+
+/* Sequencer */
+.sequencer {
+    display: flex;
+    gap: -2px;
+}
+
+.sequencer .row {
+    display: flex;
+    gap: -2px;
+}
+
+.beat {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--border-color);
+}
+
+.beat:hover {
+    background-color: lightblue;
+}
+
+.beat.active {
+    background-color: cyan;
+}
+
+.beat.active.playing {
+    background-color: greenyellow;
+}

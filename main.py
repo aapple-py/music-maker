@@ -31,7 +31,12 @@ def render_template(file: str, dest_id: str, **kwargs):
     document.getElementById(dest_id).innerHTML = output
 
 tempo = 120
-num_beats = 4
+num_beats = 4 # * 4 for 16th notes
+notes = {} # dict of instrument name to (dict of note name to list of bool of whether the note is on for each beat)
+
+with open("samples/instruments.json", "r") as file:
+    all_instruments = json.load(file)
+instrument_dict = {instrument["name"]: instrument for instrument in all_instruments}
 
 # --------------------
 # Navbar class
@@ -44,9 +49,7 @@ class Navbar:
     def __init__(self):
         
         # render navbar dropdown
-        with open("samples/instruments.json", "r") as file:
-            instruments = json.load(file)
-        instrument_list = [instrument["name"] for instrument in instruments]
+        instrument_list = [instrument["name"] for instrument in all_instruments]
         render_template("templates/navbar-instrument-list.html", "navbar-instrument-list", instruments=instrument_list)
 
     # the callbacks
@@ -68,8 +71,10 @@ class Navbar:
     @staticmethod
     @when("click", "#navbar-instrument-list")
     def instrument_cb(event):
-        instrument_id = event.target.id.replace("navbar-instrument-", "").replace("-", " ")
-        print(f"add {instrument_id}")
+        instrument_id = event.target.id.replace("navbar-instrument-", "")
+        if instrument_id not in notes:
+            notes[instrument_id] = {note["name"]: [False] * (num_beats * 4) for note in instrument_dict[instrument_id]["notes"]}
+            render()
 
     @staticmethod
     @when("click", "#navbar-settings-beats")
@@ -94,6 +99,24 @@ class Navbar:
     @when("click", "#navbar-play")
     def play_cb(event):
         print("play")
+
+# --------------------
+# Main section
+# --------------------
+def render():
+    render_template("templates/main-area.html", "main-area", instruments=[instrument_dict[i] for i in notes], num_beats=num_beats)
+    register_note_callbacks()
+
+def register_note_callbacks():
+    for instrument_name, instrument_notes in notes.items():
+        for note_name, beats in instrument_notes.items():
+            for beat in range(num_beats * 4):
+                @when("click", f"#{instrument_name}-beat-{beat}-note-{note_name}")
+                def note_cb(event, instrument_name=instrument_name, note_name=note_name, beat=beat):
+                    beats[beat] = not beats[beat]
+                    event.target.classList.toggle("active")
+
+
 
 def main():
     nav = Navbar()

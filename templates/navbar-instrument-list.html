@@ -1,5 +1,5 @@
 {% for instrument in instruments %}
-    <li><a class="dropdown-item" id="navbar-instrument-{{ instrument|replace(' ', '-') }}" >{{ instrument }}</a></li>
+    <li><a class="dropdown-item" id="navbar-instrument-{{ instrument }}" >{{ instrument|replace('-', ' ') }}</a></li>
 {% endfor %}
 
 <!-- Add the other button-->

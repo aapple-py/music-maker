@@ -2,4 +2,5 @@ packages = ["jinja2"]
 
 [files]
 "templates/navbar-instrument-list.html" = "templates/navbar-instrument-list.html"
+"templates/main-area.html" = "templates/main-area.html"
 "samples/instruments.json" = "samples/instruments.json"
