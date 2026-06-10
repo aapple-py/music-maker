@@ -55,17 +55,6 @@ def init_navbar():
 def export_wav_cb(event):
     print("export wav")
 
-def add_instrument(name):
-    # add to notes dict
-    notes[name] = {note: [False] * (num_beats * 4) for note in instrument_dict[name]["notes"]}
-
-    # load the note objects if we haven't already
-    if name not in note_objects:
-        load_notes(name)
-
-    render()
-
-    
 
 @when("click", "#navbar-instrument-list")
 async def instrument_cb(event):
@@ -82,7 +71,9 @@ async def instrument_cb(event):
         try:
             instrument_id = event.target.id.replace("navbar-instrument-", "")
             if instrument_id not in notes:
-                add_instrument(instrument_id)
+                notes[instrument_id] = {note: [False] * (num_beats * 4) for note in instrument_dict[instrument_id]["notes"]}
+                load_notes(instrument_id)
+                render()
         except Exception: pass
 
 @when("click", "#navbar-set-beats")
@@ -213,15 +204,31 @@ class Note:
     def __init__(self, path, hold_duration):
         self.path = path
         self.hold = hold_duration
-        self.audio = js.Audio.new(path)
+
+        # audio pool so a note can finish playing even if it's triggered again; debugged with Copilot
+        self.audio_pool = [js.Audio.new(path) for _ in range(5)]
+        self.current_index = 0
 
     def play(self):
-        self.audio.currentTime = 0
-        self.audio.play()
+        # Use the next audio element in the pool (round-robin)
+        audio = self.audio_pool[self.current_index]
+        self.current_index = (self.current_index + 1) % len(self.audio_pool)
+        
+        try:
+            audio.pause()
+        except: 
+            print("error pausing audio")
+        audio.currentTime = 0
+        audio.play()
 
         # if the note is not sustained stop after two sections (1/2 of a beat)
         if self.hold:
-            js.setTimeout(create_proxy(lambda: self.audio.pause()), 60000/tempo/4*self.hold)
+            def stop_note():
+                try:
+                    audio.pause()
+                except: 
+                    print("error pausing audio")
+            js.setTimeout(create_proxy(stop_note), 60000/tempo/4*self.hold)
 
 def clear_instrument_cb(event):
     if not can_edit: return
@@ -268,7 +275,8 @@ async def load_file_cb(event):
 
     # load the instrument data
     for instrument_name in notes:
-        add_instrument(instrument_name)
+        load_notes(instrument_name)
+    render()
 
 @when("click", "#navbar-save-json")
 async def save_file_json_cb(event):
