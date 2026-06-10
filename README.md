@@ -13,3 +13,4 @@
 
 - Best: 
 make a not sh*t ui/ux
+add instructions

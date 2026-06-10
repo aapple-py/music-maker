@@ -216,6 +216,7 @@ class Note:
         self.audio = js.Audio.new(path)
 
     def play(self):
+        self.audio.currentTime = 0
         self.audio.play()
 
 def main():
