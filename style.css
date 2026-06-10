@@ -61,7 +61,7 @@
     display: flex;
     gap: -2px;
 }
-
+/* getting it to not line wrap debugged with copilot */
 .grid .row {
     display: flex;
     flex-wrap: nowrap !important;
@@ -85,6 +85,10 @@
 
 .beat.active {
     background-color: cyan;
+}
+
+.beat.playing {
+    border-left: 5px solid yellow;
 }
 
 .beat.active.playing {

@@ -11,7 +11,7 @@
             </div>
             <div class="instrument-notes">
                 {% for note in instrument['notes'] %}
-                    <p class="note">{{ note['name'] }}</p>
+                    <p class="note">{{ note }}</p>
                 {% endfor %}
             </div>
         </div>
@@ -20,7 +20,7 @@
                 {% for note in instrument['notes'] %}
                     <div class="row">
                         {% for beat in range(num_beats * 4) %}
-                            <div class="col beat {% if beat % 4 == 0 %}first{% endif %}" id="{{ instrument['name'] }}-beat-{{ beat }}-note-{{ note['name'] }}"></div>
+                            <div class="col beat {% if beat % 4 == 0 %}first{% endif %} {% if current_notes[instrument['name']][note][beat] %}active{% endif %}" id="{{ instrument['name'] }}-beat-{{ beat }}-note-{{ note }}"></div>
                         {% endfor %}
                     </div>
                 {% endfor %}

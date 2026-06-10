@@ -1,9 +1,15 @@
 # TODO
 
-- Get the notes
-- make it play on click
-- playback
-- ruler
+
+- Good:
+- more instruments
 - import/export json
+- delete instruments
+
+- Better:
+- ruler
 - import custom instruments
 - export wav
+
+- Best: 
+make a not sh*t ui/ux
