@@ -2,23 +2,11 @@ import os
 import librosa
 import soundfile as sf
 
-STARTING_NOTE = "C4"
+STARTING_NOTE = "C5"
 
-NOTE_DIR = "processing/piano"
+NOTE_DIR = "processing/electric_guitar"
 
 DESIRED_NOTES = [
-    "C3",
-    "C#3",
-    "D3",
-    "D#3",
-    "E3",
-    "F3",
-    "F#3",
-    "G3",
-    "G#3",
-    "A3",
-    "A#3",
-    "B3",
     "C4",
     "C#4",
     "D4",
@@ -43,7 +31,7 @@ DESIRED_NOTES = [
     "A5",
     "A#5",
     "B5",
-    "C6",
+    "C6"
 ]
 
 SOURCE_FILE = os.path.join(NOTE_DIR, f"{STARTING_NOTE}.wav")
@@ -53,6 +41,12 @@ if not os.path.exists(SOURCE_FILE):
 
 # Load source note
 audio, sr = librosa.load(SOURCE_FILE, sr=None, mono=False)
+
+# strip any leading silence
+non_silent_indices = librosa.effects.split(audio, top_db=20)
+if non_silent_indices.size > 0:
+    start_sample = non_silent_indices[0][0]
+    audio = audio[:, start_sample:] if audio.ndim > 1 else audio[start_sample:]
 
 # Keep only the first second
 max_samples = sr

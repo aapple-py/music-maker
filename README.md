@@ -3,8 +3,9 @@
 
 - Good:
 - more instruments
-- import/export json
 - delete instruments
+- import/export json
+
 
 - Better:
 - ruler
@@ -13,4 +14,6 @@
 
 - Best: 
 make a not sh*t ui/ux
+    fixed topbar
+    reordering instruments
 add instructions

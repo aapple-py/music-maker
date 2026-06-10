@@ -1,9 +1,7 @@
 from jinja2 import Template
-from pyscript import document, when, fetch
-import asyncio
+from pyscript import document, when
 import js # type: ignore
 import json
-import time
 from pyodide.ffi import create_proxy # type: ignore
 
 # --------------------
@@ -208,16 +206,21 @@ def stop():
 def load_notes(instrument_name):
     note_objects[instrument_name] = {}
     for note in notes[instrument_name]:
-        note_objects[instrument_name][note] = Note(f"samples/{instrument_name}/{note}.ogg")
+        note_objects[instrument_name][note] = Note(f"samples/{instrument_name}/{note}.ogg", instrument_dict[instrument_name].get("hold", None))
 
 class Note:
-    def __init__(self, path):
+    def __init__(self, path, hold_duration):
         self.path = path
+        self.hold = hold_duration
         self.audio = js.Audio.new(path)
 
     def play(self):
         self.audio.currentTime = 0
         self.audio.play()
+
+        # if the note is not sustained stop after two sections (1/2 of a beat)
+        if self.hold:
+            js.setTimeout(create_proxy(lambda: self.audio.pause()), 60000/tempo/4*self.hold)
 
 def main():
     nav = Navbar()
