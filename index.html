@@ -24,8 +24,13 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link" id="navbar-import">Import</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Import
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><input type="file" class="form-control form-control-sm" id="navbar-load-file" accept=".json"></li>
+                                </ul>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -33,7 +38,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" id="navbar-export-wav">Save as wav</a></li>
-                                    <li><a class="dropdown-item" id="navbar-export-json">Save as json</a></li>
+                                    <li><a class="dropdown-item" id="navbar-save-json">Save as json</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
