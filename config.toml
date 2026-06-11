@@ -4,3 +4,4 @@ packages = ["jinja2"]
 "templates/navbar-instrument-list.html" = "templates/navbar-instrument-list.html"
 "templates/main-area.html" = "templates/main-area.html"
 "samples/instruments.json" = "samples/instruments.json"
+"templates/beat-ruler.html" = "templates/beat-ruler.html"

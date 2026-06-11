@@ -1,7 +1,6 @@
 # TODO
 
 - Better:
-- ruler
 - import custom instruments
 - export wav
 
@@ -11,3 +10,4 @@ make a not sh*t ui/ux
     reordering instruments
 add instructions
 save to browser
+- change divisions

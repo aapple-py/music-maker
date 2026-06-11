@@ -131,6 +131,9 @@ def render():
     for name in notes:
         document.getElementById(f"clear-{name}").addEventListener("click", create_proxy(clear_instrument_cb))
         document.getElementById(f"delete-{name}").addEventListener("click", create_proxy(delete_instrument_cb))
+    
+    # ensure the ruler is updated as well
+    render_ruler()
 
 def ensure_notes_length():
     for instrument_name, instrument_notes in notes.items():
@@ -294,8 +297,16 @@ async def save_file_json_cb(event):
     await fs.sync("/appdata")
     js.alert("Saved composition to composition.json")
 
+# --------------------
+# Ruler
+# --------------------
+
+def render_ruler():
+    render_template("templates/beat-ruler.html", "beat-ruler", num_beats=num_beats)
+
 
 async def main():
     init_navbar()
+    render_ruler()
     
 main()
