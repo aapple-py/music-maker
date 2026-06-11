@@ -1,9 +1,5 @@
 # TODO
 
-- Better:
-- import custom instruments
-- export wav
-
 - Best: 
 make a not sh*t ui/ux
     fixed topbar

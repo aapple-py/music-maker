@@ -1,5 +1,7 @@
+import asyncio
+
 from jinja2 import Template
-from pyscript import document, when, fs
+from pyscript import document, when, fs, window
 import js # type: ignore
 import json
 from pyodide.ffi import create_proxy # type: ignore
@@ -36,7 +38,6 @@ notes = {} # dict of instrument name to (dict of note name to list of bool of wh
 note_objects = {} # dict of instrument name to (dict of note name to Note object)
 can_edit = True
 play_interval_id = None
-file_connected = False
 
 with open("samples/instruments.json", "r") as file:
     all_instruments = json.load(file)
@@ -51,20 +52,8 @@ def init_navbar():
     render_template("templates/navbar-instrument-list.html", "navbar-instrument-list", instruments=instrument_list)
 
 # the callbacks
-@when("click", "#navbar-export-wav")
-def export_wav_cb(event):
-    print("export wav")
-
-
 @when("click", "#navbar-instrument-list")
 async def instrument_cb(event):
-    # this is a good time to ensure file i/o is working
-    global file_connected
-    if not file_connected:
-        await fs.mount("/appdata", mode="readwrite")
-        file_connected = True
-
-
     if not can_edit: return
 
     if event.target.id.startswith("navbar-instrument-"):
@@ -283,19 +272,49 @@ async def load_file_cb(event):
 
 @when("click", "#navbar-save-json")
 async def save_file_json_cb(event):
-    if not file_connected:
-        return
-    
-    print("saving file")
     data = {
         "tempo": tempo,
         "num_beats": num_beats,
         "notes": notes
     }
-    with open("/appdata/composition.json", "w") as file:
-        json.dump(data, file)
-    await fs.sync("/appdata")
-    js.alert("Saved composition to composition.json")
+    
+    # make the data into a blob and download it
+    blob = js.Blob.new([json.dumps(data)], { "type": "application/json" })
+    url = js.URL.createObjectURL(blob)
+    link = document.createElement("a")
+    link.href = url
+    link.download = "composition.json"
+    link.click()
+
+@when("click", "#navbar-export-wav")
+def record_audio():
+    js.alert("In order to record the audio, the website will record one full cycle of the composition. Please do not press the stop button to ensure that this does not fail.")
+
+    # collect all Audio objects
+    all_audio = []
+    for _, instrument_notes in note_objects.items():
+        for _, note_obj in instrument_notes.items():
+            all_audio.extend(note_obj.audio_pool)
+
+    # set the time for stopping the recording
+    async def stop_recording():
+        window.stopCapturingAudioTimeline()
+        stop()
+
+        # download the file
+        await asyncio.sleep(0.5) # Quick buffer for processing
+        blob_url = window.latestCombinedAudioUrl
+        
+        link = document.createElement("a")
+        link.href = blob_url
+        link.download = "composition.ogg"
+        link.click()
+
+    js.setTimeout(create_proxy(stop_recording), 60000/tempo/4*num_beats*4)
+
+    # start recording
+    window.startCapturingAudioTimeline(all_audio)
+    play()
 
 # --------------------
 # Ruler
