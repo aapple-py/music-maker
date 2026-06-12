@@ -39,6 +39,7 @@ note_objects = {} # dict of instrument name to (dict of note name to Note object
 can_edit = True
 play_interval_id = None
 divisions_per_beat = 4
+instrument_vols = {}
 
 with open("samples/instruments.json", "r") as file:
     all_instruments = json.load(file)
@@ -62,6 +63,7 @@ async def instrument_cb(event):
             instrument_id = event.target.id.replace("navbar-instrument-", "")
             if instrument_id not in notes:
                 notes[instrument_id] = {note: [False] * (num_beats * divisions_per_beat) for note in instrument_dict[instrument_id]["notes"]}
+                instrument_vols[instrument_id] = 50
                 load_notes(instrument_id)
                 render()
         except Exception: pass
@@ -139,6 +141,7 @@ def register_volume_callbacks():
                 for note_obj in note_objects[instrument_name].values():
                     for audio in note_obj.audio_pool:
                         audio.volume = new_volume / 100
+                instrument_vols[instrument_name] = new_volume
             except ValueError:
                 js.alert("Please enter a valid number for the volume.")
             except AssertionError:
@@ -147,7 +150,7 @@ def register_volume_callbacks():
 
 def render():
     global num_beats, divisions_per_beat
-    render_template("templates/main-area.html", "main-area", instruments=[instrument_dict[i] for i in notes], num_beats=num_beats, current_notes=notes, divisions_per_beat=divisions_per_beat)
+    render_template("templates/main-area.html", "main-area", instruments=[instrument_dict[i] for i in notes], num_beats=num_beats, current_notes=notes, divisions_per_beat=divisions_per_beat, instrument_vols=instrument_vols)
     register_note_callbacks()
     ensure_notes_length()
 
@@ -169,11 +172,21 @@ def ensure_notes_length():
             elif len(beats) > num_beats * divisions_per_beat:
                 notes[instrument_name][note_name] = beats[:num_beats * divisions_per_beat]
 
+mousedown = False
+@when("mousedown", document)
+def mousedown_cb(event):
+    global mousedown
+    mousedown = True
+
+@when("mouseup", document)
+def mouseup_cb(event):
+    global mousedown
+    mousedown = False
+
 def register_note_callbacks():
     for instrument_name, instrument_notes in notes.items():
         for note_name, beats in instrument_notes.items():
             for beat in range(num_beats * divisions_per_beat):
-                @when("click", f"#{instrument_name}-beat-{beat}-note-{note_name}")
                 # debugged with Copilot
                 def note_cb(event, instrument_name=instrument_name, note_name=note_name, beat=beat, beats=beats):
                     if not can_edit: return
@@ -183,6 +196,13 @@ def register_note_callbacks():
 
                     beats[beat] = not beats[beat]
                     event.target.classList.toggle("active")
+
+                def mouseover_cb(event, instrument_name=instrument_name, note_name=note_name, beat=beat, beats=beats):
+                    if mousedown:
+                        note_cb(event, instrument_name, note_name, beat, beats)
+
+                when("click", f"#{instrument_name}-beat-{beat}-note-{note_name}")(note_cb)
+                when("mouseover", f"#{instrument_name}-beat-{beat}-note-{note_name}")(mouseover_cb)
 
 # Debugged with Copilot
 def play():
@@ -297,11 +317,12 @@ async def load_file_cb(event):
     # read and parse the file
     text = await file.text()
     data = json.loads(text)
-    global tempo, num_beats, notes, divisions_per_beat
+    global tempo, num_beats, notes, divisions_per_beat, instrument_vols
     tempo = data["tempo"]
     num_beats = data["num_beats"]
     notes = data["notes"]
     divisions_per_beat = data["divisions_per_beat"]
+    instrument_vols = data["instrument_vols"]
 
     # load the instrument data
     for instrument_name in notes:
@@ -314,7 +335,8 @@ async def save_file_json_cb(event):
         "tempo": tempo,
         "num_beats": num_beats,
         "notes": notes,
-        "divisions_per_beat": divisions_per_beat
+        "divisions_per_beat": divisions_per_beat,
+        "instrument_vols": instrument_vols
     }
     
     # make the data into a blob and download it
@@ -372,7 +394,8 @@ def save_on_exit(event):
         "tempo": tempo,
         "num_beats": num_beats,
         "notes": notes,
-        "divisions_per_beat": divisions_per_beat
+        "divisions_per_beat": divisions_per_beat,
+        "instrument_vols": instrument_vols
     }
     js.localStorage.setItem("composition", json.dumps(data))
 
@@ -381,11 +404,13 @@ def load_from_storage():
     data = js.localStorage.getItem("composition")
     if data:
         data = json.loads(data)
-        global tempo, num_beats, notes, divisions_per_beat
+        global tempo, num_beats, notes, divisions_per_beat, instrument_vols
         tempo = data["tempo"]
         num_beats = data["num_beats"]
         notes = data["notes"]
         divisions_per_beat = data["divisions_per_beat"]
+        instrument_vols = data["instrument_vols"]
+
         # load the instrument data
         for instrument_name in notes:
             load_notes(instrument_name)
