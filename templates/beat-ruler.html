@@ -1,7 +1,7 @@
 <div class="ruler-spacer"></div>
 {% for beat in range(num_beats) %}
     <div class="ruler-beat beat-number">{{ beat + 1 }}</div>
-    <div class="ruler-beat"></div>
-    <div class="ruler-beat"></div>
-    <div class="ruler-beat"></div>
+    {% for division in range(divisions_per_beat - 1) %}
+        <div class="ruler-beat"></div>
+    {% endfor %}
 {% endfor %}

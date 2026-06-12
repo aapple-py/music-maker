@@ -2,9 +2,9 @@
     <div class="row instrument-row">
         <div class="instrument-card">
             <div class="instrument-data">
-                <h2>{{ instrument['name']|replace('-', ' ') }}</h2>
+                <h3>{{ instrument['name']|replace('-', ' ') }}</h3>
                 <p>Volume:</p>
-                <form class="instrument-form">
+                <form class="instrument-form" onsubmit="event.preventDefault();">
                     <input type="number" class="form-control form-control-sm" id="volume-{{ instrument['name'] }}" placeholder="Volume" min="0" max="100" value="50" style="width: 100px;">
                 </form>
                 <button class="btn btn-warning btn-sm clear" id="clear-{{ instrument['name'] }}">Clear</button>
@@ -20,8 +20,8 @@
             <div class="grid">
                 {% for note in instrument['notes'] %}
                     <div class="row">
-                        {% for beat in range(num_beats * 4) %}
-                            <div class="col beat {% if beat % 4 == 0 %}first{% endif %} {% if current_notes[instrument['name']][note][beat] %}active{% endif %}" id="{{ instrument['name'] }}-beat-{{ beat }}-note-{{ note }}"></div>
+                        {% for beat in range(num_beats * divisions_per_beat) %}
+                            <div class="col beat {% if beat % divisions_per_beat == 0 %}first{% endif %} {% if current_notes[instrument['name']][note][beat] %}active{% endif %}" id="{{ instrument['name'] }}-beat-{{ beat }}-note-{{ note }}"></div>
                         {% endfor %}
                     </div>
                 {% endfor %}

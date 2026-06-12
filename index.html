@@ -16,7 +16,7 @@
     <body>
         <div class="main-container">
             <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-fixed">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">Music Maker</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,6 +56,13 @@
                                     <button class="btn btn-outline-primary btn-sm" id="navbar-set-beats" type="submit">Set</button>
                                 </form>
                             </li>
+                            <li class="nav-item">
+                                <form class="d-flex" style="gap: 0.5rem; align-items: center; margin-left: 1rem;">
+                                    <p class="navbar-text mb-0">Divisions per beat:</p>
+                                    <input type="number" class="form-control form-control-sm" id="navbar-divisions" placeholder="Divisions per beat" min="1" max="8" value="4" style="width: 100px;">
+                                    <button class="btn btn-outline-primary btn-sm" id="navbar-set-divisions" type="submit">Set</button>
+                                </form>
+                            </li>
                         </ul>
                         <div class="d-flex">
                             <form class="d-flex" style="gap: 0.5rem; align-items: center;">
@@ -68,6 +75,9 @@
                     </div>
                 </div>
             </nav>
+
+            <!-- spacer-->
+            <div style="height: calc(1rem + 40px)"></div>
 
             <div class="ruler-container" id="beat-ruler">
                 <!-- The python will add the beat ruler here -->

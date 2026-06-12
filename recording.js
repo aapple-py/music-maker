@@ -1,3 +1,5 @@
+// Created with copilot
+
 let mediaRecorder;
 let recordedChunks = [];
 

@@ -1,6 +1,18 @@
 :root {
     --border-color: rgb(100, 100, 100);
 }
+
+/* Navbar */
+.navbar-fixed {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+
+
 /* Instrument cards */
 
 .instrument-row {

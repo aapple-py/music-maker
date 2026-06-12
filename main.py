@@ -38,6 +38,7 @@ notes = {} # dict of instrument name to (dict of note name to list of bool of wh
 note_objects = {} # dict of instrument name to (dict of note name to Note object)
 can_edit = True
 play_interval_id = None
+divisions_per_beat = 4
 
 with open("samples/instruments.json", "r") as file:
     all_instruments = json.load(file)
@@ -60,7 +61,7 @@ async def instrument_cb(event):
         try:
             instrument_id = event.target.id.replace("navbar-instrument-", "")
             if instrument_id not in notes:
-                notes[instrument_id] = {note: [False] * (num_beats * 4) for note in instrument_dict[instrument_id]["notes"]}
+                notes[instrument_id] = {note: [False] * (num_beats * divisions_per_beat) for note in instrument_dict[instrument_id]["notes"]}
                 load_notes(instrument_id)
                 render()
         except Exception: pass
@@ -79,6 +80,22 @@ def settings_beats_cb(event):
         js.alert("Please enter a valid number for the number of beats.")
     except AssertionError:
         js.alert("Please enter a number of beats between 1 and 16.")
+    render()
+
+@when("click", "#navbar-set-divisions")
+def settings_divisions_cb(event):
+    event.preventDefault()
+    if not can_edit: return
+    
+    try:
+        global divisions_per_beat
+        new_divisions = int(document.getElementById("navbar-divisions").value)
+        assert 1 <= new_divisions <= 8
+        divisions_per_beat = new_divisions
+    except ValueError:
+        js.alert("Please enter a valid number for the divisions per beat.")
+    except AssertionError:
+        js.alert("Please enter a number of divisions per beat between 1 and 8.")
     render()
 
 @when("click", "#navbar-set-tempo")
@@ -111,8 +128,26 @@ def play_cb(event):
 # --------------------
 # Main section
 # --------------------
+def register_volume_callbacks():
+    for instrument_name in note_objects:
+        @when("input", f"#volume-{instrument_name}")
+        def volume_cb(event, instrument_name=instrument_name):
+            event.preventDefault()
+            try:
+                new_volume = float(event.target.value)
+                assert 0 <= new_volume <= 100
+                for note_obj in note_objects[instrument_name].values():
+                    for audio in note_obj.audio_pool:
+                        audio.volume = new_volume / 100
+            except ValueError:
+                js.alert("Please enter a valid number for the volume.")
+            except AssertionError:
+                js.alert("Please enter a volume between 0 and 100.")
+
+
 def render():
-    render_template("templates/main-area.html", "main-area", instruments=[instrument_dict[i] for i in notes], num_beats=num_beats, current_notes=notes)
+    global num_beats, divisions_per_beat
+    render_template("templates/main-area.html", "main-area", instruments=[instrument_dict[i] for i in notes], num_beats=num_beats, current_notes=notes, divisions_per_beat=divisions_per_beat)
     register_note_callbacks()
     ensure_notes_length()
 
@@ -120,6 +155,8 @@ def render():
     for name in notes:
         document.getElementById(f"clear-{name}").addEventListener("click", create_proxy(clear_instrument_cb))
         document.getElementById(f"delete-{name}").addEventListener("click", create_proxy(delete_instrument_cb))
+
+    register_volume_callbacks()
     
     # ensure the ruler is updated as well
     render_ruler()
@@ -127,15 +164,15 @@ def render():
 def ensure_notes_length():
     for instrument_name, instrument_notes in notes.items():
         for note_name, beats in instrument_notes.items():
-            if len(beats) < num_beats * 4:
-                beats.extend([False] * (num_beats * 4 - len(beats)))
-            elif len(beats) > num_beats * 4:
-                notes[instrument_name][note_name] = beats[:num_beats * 4]
+            if len(beats) < num_beats * divisions_per_beat:
+                beats.extend([False] * (num_beats * divisions_per_beat - len(beats)))
+            elif len(beats) > num_beats * divisions_per_beat:
+                notes[instrument_name][note_name] = beats[:num_beats * divisions_per_beat]
 
 def register_note_callbacks():
     for instrument_name, instrument_notes in notes.items():
         for note_name, beats in instrument_notes.items():
-            for beat in range(num_beats * 4):
+            for beat in range(num_beats * divisions_per_beat):
                 @when("click", f"#{instrument_name}-beat-{beat}-note-{note_name}")
                 # debugged with Copilot
                 def note_cb(event, instrument_name=instrument_name, note_name=note_name, beat=beat, beats=beats):
@@ -149,12 +186,12 @@ def register_note_callbacks():
 
 # Debugged with Copilot
 def play():
-    ms_per_beat = 60000 / (tempo * 4) # 4 for 16th notes
+    ms_per_beat = 60000 / (tempo * divisions_per_beat)
     beat = 0
 
     def play_beat():
         nonlocal beat
-        prev_beat = (beat - 1) % (num_beats * 4)
+        prev_beat = (beat - 1) % (num_beats * divisions_per_beat)
 
         # iterate over each note of each instrument
         for instrument_name, instrument_notes in notes.items():
@@ -170,7 +207,7 @@ def play():
                 document.getElementById(f"{instrument_name}-beat-{prev_beat}-note-{note_name}").classList.remove("playing")
 
         # advance beat once after all instruments/notes are processed
-        beat = (beat + 1) % (num_beats * 4)
+        beat = (beat + 1) % (num_beats * divisions_per_beat)
 
         
     # schedule the beat playback
@@ -184,7 +221,7 @@ def stop():
     # remove "playing" class from all notes    
     for instrument_name, instrument_notes in notes.items():
         for note_name, beats in instrument_notes.items():
-            for beat in range(num_beats * 4):
+            for beat in range(num_beats * divisions_per_beat):
                 document.getElementById(f"{instrument_name}-beat-{beat}-note-{note_name}").classList.remove("playing")
 
 def load_notes(instrument_name):
@@ -220,14 +257,14 @@ class Note:
                     audio.pause()
                 except: 
                     print("error pausing audio")
-            js.setTimeout(create_proxy(stop_note), 60000/tempo/4*self.hold)
+            js.setTimeout(create_proxy(stop_note), 60000/tempo/divisions_per_beat*self.hold)
 
 def clear_instrument_cb(event):
     if not can_edit: return
 
     instrument_name = event.target.id.replace("clear-", "")
     for note in notes[instrument_name]:
-        notes[instrument_name][note] = [False] * (num_beats * 4)
+        notes[instrument_name][note] = [False] * (num_beats * divisions_per_beat)
     render()
 
 def delete_instrument_cb(event):
@@ -260,10 +297,11 @@ async def load_file_cb(event):
     # read and parse the file
     text = await file.text()
     data = json.loads(text)
-    global tempo, num_beats, notes
+    global tempo, num_beats, notes, divisions_per_beat
     tempo = data["tempo"]
     num_beats = data["num_beats"]
     notes = data["notes"]
+    divisions_per_beat = data["divisions_per_beat"]
 
     # load the instrument data
     for instrument_name in notes:
@@ -275,7 +313,8 @@ async def save_file_json_cb(event):
     data = {
         "tempo": tempo,
         "num_beats": num_beats,
-        "notes": notes
+        "notes": notes,
+        "divisions_per_beat": divisions_per_beat
     }
     
     # make the data into a blob and download it
@@ -310,7 +349,7 @@ def record_audio():
         link.download = "composition.ogg"
         link.click()
 
-    js.setTimeout(create_proxy(stop_recording), 60000/tempo/4*num_beats*4)
+    js.setTimeout(create_proxy(stop_recording), 60000/tempo/divisions_per_beat*num_beats*divisions_per_beat)
 
     # start recording
     window.startCapturingAudioTimeline(all_audio)
@@ -321,11 +360,42 @@ def record_audio():
 # --------------------
 
 def render_ruler():
-    render_template("templates/beat-ruler.html", "beat-ruler", num_beats=num_beats)
+    render_template("templates/beat-ruler.html", "beat-ruler", num_beats=num_beats, divisions_per_beat=divisions_per_beat)
 
+# --------------------
+# Save to browser storage on exit
+# --------------------
+@when("visibilitychange", document)
+def save_on_exit(event):
+    print("Saving composition to local storage...")
+    data = {
+        "tempo": tempo,
+        "num_beats": num_beats,
+        "notes": notes,
+        "divisions_per_beat": divisions_per_beat
+    }
+    js.localStorage.setItem("composition", json.dumps(data))
+
+# Debugged with Copilot
+def load_from_storage():
+    data = js.localStorage.getItem("composition")
+    if data:
+        data = json.loads(data)
+        global tempo, num_beats, notes, divisions_per_beat
+        tempo = data["tempo"]
+        num_beats = data["num_beats"]
+        notes = data["notes"]
+        divisions_per_beat = data["divisions_per_beat"]
+        # load the instrument data
+        for instrument_name in notes:
+            load_notes(instrument_name)
+        render()
 
 async def main():
     init_navbar()
     render_ruler()
+    try:
+        load_from_storage()
+    except: pass # no data to load
     
 main()
