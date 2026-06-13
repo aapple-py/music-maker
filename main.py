@@ -385,7 +385,7 @@ def load_notes(instrument_name):
     note_objects[instrument_name] = {}
     for note in notes[instrument_name]:
         note_objects[instrument_name][note] = Note(
-            f"samples/{instrument_name}/{note}.ogg")
+            f"samples/{instrument_name.lower()}/{note[0].upper() + note[1:]}.ogg")
 
 # --------------------
 # File I/O
