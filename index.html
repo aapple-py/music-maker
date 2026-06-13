@@ -5,11 +5,11 @@
         <title>Music Maker</title>
 
         <!-- Load styles and bootstrap -->
-        <link rel="stylesheet" href="style.css"/>
+        <link rel="stylesheet" href="style.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
         <!-- Load PyScript Core -->
-        <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
+        <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
         <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
 
     </head>
@@ -37,7 +37,7 @@
                                     Export
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" id="navbar-export-wav">Save as wav</a></li>
+                                    <li><a class="dropdown-item" id="navbar-export-ogg">Save as ogg</a></li>
                                     <li><a class="dropdown-item" id="navbar-save-json">Save as json</a></li>
                                 </ul>
                             </li>
@@ -46,7 +46,7 @@
                                     Add instrument
                                 </a>
                                 <ul class="dropdown-menu" id="navbar-instrument-list">
-                                    <!-- The python will add the list of instruments here; source = instrument-list.html -->
+                                    <!-- The python will add the list of instruments here -->
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -84,12 +84,12 @@
             </div>
 
             <!-- Main area-->
-            <div class="containter text-center" id="main-area" style="overflow-x: visible;">
+            <div id="main-area" style="overflow-x: visible;">
                 <!-- The python will add the instruments here -->
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script type="py" src="main.py" config="config.toml"></script>
+        <script type="py" src="main.py" config="config.json"></script>
         <script src="recording.js"></script>
     </body>
 </html>

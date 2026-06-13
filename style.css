@@ -16,10 +16,10 @@
 /* Instrument cards */
 
 .instrument-row {
-  border-bottom: 5px solid var(--border-color);  
-  flex-wrap: nowrap !important;
-  width: fit-content;
-  min-width: 100%;
+    border-bottom: 5px solid var(--border-color);
+    flex-wrap: nowrap !important;
+    width: fit-content;
+    min-width: 100%;
 }
 
 .instrument-card {
@@ -68,11 +68,8 @@
     padding: 0.25rem;
 }
 
-/* Sequencer */
-.sequencer {
-    display: flex;
-    gap: -2px;
-}
+/* Note grid */
+
 /* getting it to not line wrap debugged with copilot */
 .grid .row {
     display: flex;

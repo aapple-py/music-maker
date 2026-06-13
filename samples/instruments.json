@@ -1,6 +1,7 @@
 [
     {
         "name": "Piano",
+        "sustain": true,
         "notes": [
             "c6",
             "b5",
@@ -44,7 +45,7 @@
 
     {
         "name": "Organ",
-        "hold": 3,
+        "sustain": true,
         "notes": [
             "c5",
             "b4",
@@ -88,7 +89,7 @@
 
     {
         "name": "Saxophone",
-        "hold": 1,
+        "sustain": false,
         "notes": [
             "c4",
             "b3",
@@ -120,7 +121,7 @@
 
     {
         "name": "Violin",
-        "hold": 2,
+        "sustain": false,
         "notes": [
             "g5",
             "fs5",
@@ -152,7 +153,7 @@
 
     {
         "name": "Guitar",
-        "hold": 2,
+        "sustain": true,
         "notes": [
             "c5",
             "b4",
@@ -192,7 +193,7 @@
 
     {
         "name": "Bass",
-        "hold": 2,
+        "sustain": false,
         "notes": [
             "g3",
             "fs3",
@@ -224,7 +225,7 @@
 
     {
         "name": "Flute",
-        "hold": 2,
+        "sustain": false,
         "notes": [
             "c6",
             "b5",
@@ -256,7 +257,7 @@
 
     {
         "name": "Electric_guitar",
-        "hold": 2,
+        "sustain": false,
         "notes": [
             "c6",
             "b5",
@@ -289,6 +290,7 @@
 
     {
         "name": "Drums",
+        "sustain": false,
         "notes": [
             "cymbal_loud",
             "cymbal_soft",
