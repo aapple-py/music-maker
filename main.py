@@ -343,11 +343,14 @@ def play():
             for note_name, beats in instrument_notes.items():
                 # play the note if it's active for the current beat
                 if beats[beat]:
-                    # stop the note if it shouldnt be sustained
-                    if not instrument_dict[instrument_name]["sustain"]:
-                        for note_obj in note_objects[instrument_name].values():
-                            note_obj.stop()
-                    note_objects[instrument_name][note_name].play()
+                    try:
+                        # stop the note if it shouldnt be sustained
+                        if not instrument_dict[instrument_name]["sustain"]:
+                            for note_obj in note_objects[instrument_name].values():
+                                note_obj.stop()
+                        note_objects[instrument_name][note_name].play()
+                    except:
+                        pass
 
                 # add the "playing" class to the current beat
                 document.getElementById(
